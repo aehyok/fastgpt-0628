@@ -53,11 +53,23 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
 
   return (
     <>
-      <Box fontWeight={'bold'} fontSize={'2xl'} textAlign={'center'}>
+      <Box fontWeight={'bold'} fontSize={'2xl'} textAlign={'left'}>
         登录 FastGPT
       </Box>
+      <Flex align={'center'} justifyContent={'flex-start'} mt={4} mb={4}>
+        <Box fontSize="sm">新用户？</Box>
+        <Box
+          cursor={'pointer'}
+          _hover={{ textDecoration: 'underline' }}
+          onClick={() => setPageType('register')}
+          fontSize="sm"
+          color={'myBlue.600'}
+        >
+          注册账号
+        </Box>
+      </Flex>
       <form onSubmit={handleSubmit(onclickLogin)}>
-        <FormControl mt={8} isInvalid={!!errors.username}>
+        <FormControl isInvalid={!!errors.username}>
           <Input
             placeholder="邮箱/手机号"
             size={['md', 'lg']}
@@ -95,24 +107,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
             {!!errors.password && errors.password.message}
           </FormErrorMessage>
         </FormControl>
-        <Flex align={'center'} justifyContent={'space-between'} mt={6} color={'myBlue.600'}>
-          <Box
-            cursor={'pointer'}
-            _hover={{ textDecoration: 'underline' }}
-            onClick={() => setPageType('forgetPassword')}
-            fontSize="sm"
-          >
-            忘记密码?
-          </Box>
-          <Box
-            cursor={'pointer'}
-            _hover={{ textDecoration: 'underline' }}
-            onClick={() => setPageType('register')}
-            fontSize="sm"
-          >
-            注册账号
-          </Box>
-        </Flex>
+
         <Button
           type="submit"
           mt={8}
@@ -123,6 +118,16 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
         >
           登录
         </Button>
+        <Flex align={'center'} justifyContent={'flex-end'} mt={6} color={'myBlue.600'}>
+          <Box
+            cursor={'pointer'}
+            _hover={{ textDecoration: 'underline' }}
+            onClick={() => setPageType('forgetPassword')}
+            fontSize="sm"
+          >
+            忘记密码?
+          </Box>
+        </Flex>
       </form>
     </>
   );
