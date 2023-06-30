@@ -73,8 +73,8 @@ const Login = () => {
       <Flex
         height="100%"
         w={'100%'}
-        maxW={'1240px'}
-        maxH={['auto', 'max(660px,80vh)']}
+        maxW={'1040px'}
+        maxH={['auto', 'max(560px,40vh)']}
         backgroundColor={'#fff'}
         alignItems={'center'}
         justifyContent={'center'}
@@ -83,7 +83,7 @@ const Login = () => {
         borderRadius={isPc ? 'md' : 'none'}
         gap={5}
       >
-        {isPc && (
+        {isPc && pageType === PageTypeEnum.login && (
           <Image
             src={'/icon/loginLeft.svg'}
             order={pageType === PageTypeEnum.login ? 0 : 2}
@@ -99,12 +99,10 @@ const Login = () => {
         <Box
           order={1}
           flex={`0 0 ${isPc ? '400px' : '100%'}`}
-          height={'100%'}
-          border="1px"
-          borderColor="gray.200"
           py={5}
           px={10}
           borderRadius={isPc ? 'md' : 'none'}
+          position={'relative'}
         >
           <DynamicComponent type={pageType} />
         </Box>

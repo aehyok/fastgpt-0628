@@ -75,6 +75,20 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
       <Box fontWeight={'bold'} fontSize={'2xl'} textAlign={'center'}>
         找回 FastGPT 账号
       </Box>
+
+      <Flex align={'center'} justifyContent={'flex-start'} mt={4} mb={4}>
+        <Box
+          float={'right'}
+          fontSize="sm"
+          color={'myBlue.600'}
+          cursor={'pointer'}
+          _hover={{ textDecoration: 'underline' }}
+          onClick={() => setPageType('login')}
+        >
+          去登录
+        </Box>
+      </Flex>
+
       <form onSubmit={handleSubmit(onclickFindPassword)}>
         <FormControl mt={5} isInvalid={!!errors.username}>
           <Input
@@ -153,17 +167,7 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
             {!!errors.password2 && errors.password2.message}
           </FormErrorMessage>
         </FormControl>
-        <Box
-          float={'right'}
-          fontSize="sm"
-          mt={2}
-          color={'myBlue.600'}
-          cursor={'pointer'}
-          _hover={{ textDecoration: 'underline' }}
-          onClick={() => setPageType('login')}
-        >
-          去登录
-        </Box>
+
         <Button
           type="submit"
           mt={5}
