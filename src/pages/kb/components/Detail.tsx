@@ -36,14 +36,6 @@ const Detail = ({ kbId }: { kbId: string }) => {
   const { getValues, formState, setValue, reset, register, handleSubmit } = useForm<KbItemType>({
     defaultValues: kbDetail
   });
-  const { openConfirm, ConfirmChild } = useConfirm({
-    content: '确认删除该知识库？数据将无法恢复，请确认！'
-  });
-
-  const { File, onOpen: onOpenSelectFile } = useSelectFile({
-    fileType: '.jpg,.png',
-    multiple: false
-  });
 
   useQuery([kbId, myKbList], () => getKbDetail(kbId), {
     onSuccess(res) {
@@ -151,91 +143,9 @@ const Detail = ({ kbId }: { kbId: string }) => {
 
   return (
     <Box h={'100%'} p={5} overflow={'overlay'} position={'relative'}>
-      <Card p={6}>
-        <Flex>
-          <Box fontWeight={'bold'} fontSize={'2xl'} flex={1}>
-            知识库信息
-          </Box>
-          {kbDetail._id && (
-            <>
-              <Button
-                isLoading={btnLoading}
-                mr={3}
-                onClick={handleSubmit(saveSubmitSuccess, saveSubmitError)}
-              >
-                保存
-              </Button>
-              <IconButton
-                isLoading={btnLoading}
-                icon={<DeleteIcon />}
-                aria-label={''}
-                variant={'solid'}
-                colorScheme={'red'}
-                onClick={openConfirm(onclickDelKb)}
-              />
-            </>
-          )}
-        </Flex>
-        <Flex mt={5} alignItems={'center'}>
-          <Box flex={'0 0 60px'} w={0}>
-            头像
-          </Box>
-          <Avatar
-            src={getValues('avatar')}
-            w={['28px', '36px']}
-            h={['28px', '36px']}
-            cursor={'pointer'}
-            title={'点击切换头像'}
-            onClick={onOpenSelectFile}
-          />
-        </Flex>
-        <FormControl mt={5}>
-          <Flex alignItems={'center'} maxW={'350px'}>
-            <Box flex={'0 0 60px'} w={0}>
-              名称
-            </Box>
-            <Input
-              {...register('name', {
-                required: '知识库名称不能为空'
-              })}
-            />
-          </Flex>
-        </FormControl>
-        <Box>
-          <Flex mt={5} alignItems={'center'} maxW={'350px'} flexWrap={'wrap'}>
-            <Box flex={'0 0 60px'} w={0}>
-              标签
-              <Tooltip label={'仅用于记忆，用空格隔开多个标签'}>
-                <QuestionOutlineIcon ml={1} />
-              </Tooltip>
-            </Box>
-            <Input
-              flex={1}
-              ref={InputRef}
-              placeholder={'标签,使用空格分割。'}
-              onChange={(e) => {
-                setValue('tags', e.target.value);
-                setRefresh(!refresh);
-              }}
-            />
-            <Box pl={'60px'} mt={2} w="100%">
-              {getValues('tags')
-                .split(' ')
-                .filter((item) => item)
-                .map((item, i) => (
-                  <Tag mr={2} mb={2} key={i} variant={'outline'} colorScheme={'blue'}>
-                    {item}
-                  </Tag>
-                ))}
-            </Box>
-          </Flex>
-        </Box>
-      </Card>
       <Card p={6} mt={5}>
         <DataCard kbId={kbId} />
       </Card>
-      <File onSelect={onSelectFile} />
-      <ConfirmChild />
     </Box>
   );
 };

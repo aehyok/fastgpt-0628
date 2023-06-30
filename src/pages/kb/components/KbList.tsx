@@ -7,7 +7,13 @@ import {
   IconButton,
   Tooltip,
   Tag,
-  useDisclosure
+  useDisclosure,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogBody,
+  AlertDialogFooter
 } from '@chakra-ui/react';
 import { Button, Menu, MenuButton, MenuList, MenuItem, Image } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
@@ -21,6 +27,7 @@ import MyIcon from '@/components/Icon';
 import Avatar from '@/components/Avatar';
 import KbModal from './KbModal';
 import { useConfirm } from '@/hooks/useConfirm';
+import KbDeleteAlert from './KbDeleteAlert';
 
 const KbList = ({ kbId }: { kbId: string }) => {
   const theme = useTheme();
@@ -29,8 +36,9 @@ const KbList = ({ kbId }: { kbId: string }) => {
   const { Loading, setIsLoading } = useLoading();
   const { myKbList, loadKbList } = useUserStore();
   const [searchText, setSearchText] = useState('');
+  const [deleteId, setDeleteId] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { setLastKbId, kbDetail, getKbDetail } = useUserStore();
   const kbs = useMemo(
     () => myKbList.filter((item) => new RegExp(searchText, 'ig').test(item.name + item.tags)),
     [myKbList, searchText]
@@ -69,34 +77,45 @@ const KbList = ({ kbId }: { kbId: string }) => {
     console.log('Child div clicked');
   };
 
-  const { openConfirm, ConfirmChild: ConfirmDelete } = useConfirm({
-    content: '确认删除该知识库？数据将无法恢复，请确认！'
-  });
-
-  const deleteOpenConfirm = () => {
-    alert('111111111');
-    openConfirm(onclickDelKb);
+  const deleteOpenConfirm = (item: any) => {
+    setDeleteId(item._id);
+    onOpenAlert();
   };
 
+  const editKbClick = useCallback(
+    (item: any) => {
+      console.log(item, 'edit');
+      setLastKbId(item._id);
+      onOpen();
+    },
+    [onOpen, setLastKbId]
+  );
+
   /* 点击删除 */
-  const onclickDelKb = useCallback(async () => {
-    // setBtnLoading(true);
-    try {
-      await delKbById(kbId);
-      toast({
-        title: '删除成功',
-        status: 'success'
-      });
-      router.replace(`/kb?kbId=${myKbList.find((item) => item._id !== kbId)?._id || ''}`);
-      await loadKbList(true);
-    } catch (err: any) {
-      toast({
-        title: err?.message || '删除失败',
-        status: 'error'
-      });
-    }
-    // setBtnLoading(false);
-  }, [kbId, toast, router, myKbList, loadKbList]);
+  const onclickDelKb = useCallback(
+    async (editId?: string) => {
+      // setBtnLoading(true);
+      console.log(editId, 'editId');
+      try {
+        editId ? await delKbById(editId) : delKbById(kbId);
+        toast({
+          title: '删除成功',
+          status: 'success'
+        });
+        router.replace(`/kb?kbId=${myKbList.find((item) => item._id !== kbId)?._id || ''}`);
+        await loadKbList(true);
+      } catch (err: any) {
+        toast({
+          title: err?.message || '删除失败',
+          status: 'error'
+        });
+      }
+      // setBtnLoading(false);
+    },
+    [kbId, toast, router, myKbList, loadKbList]
+  );
+
+  const { isOpen: isOpenAlert, onOpen: onOpenAlert, onClose: onCloseAlert } = useDisclosure();
 
   return (
     <>
@@ -190,19 +209,25 @@ const KbList = ({ kbId }: { kbId: string }) => {
                   )}
                 </Box>
               </Box>
-              <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                <Menu>
-                  <MenuButton onClick={handleClick}>....</MenuButton>
-                  <MenuList>
-                    <MenuItem minH="48px">
-                      <span>编辑</span>
-                    </MenuItem>
-                    <MenuItem minH="40px" onClick={deleteOpenConfirm}>
-                      <span>删除</span>
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </Box>
+              {kbId === item._id ? (
+                <>
+                  <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                    <Menu>
+                      <MenuButton onClick={handleClick}>....</MenuButton>
+                      <MenuList>
+                        <MenuItem minH="48px" onClick={() => editKbClick(item)}>
+                          <span>编辑</span>
+                        </MenuItem>
+                        <MenuItem minH="40px" onClick={() => deleteOpenConfirm(item)}>
+                          <span>删除</span>
+                        </MenuItem>
+                      </MenuList>
+                    </Menu>
+                  </Box>
+                </>
+              ) : (
+                ''
+              )}
             </Flex>
           ))}
 
@@ -218,7 +243,14 @@ const KbList = ({ kbId }: { kbId: string }) => {
         <Loading loading={isLoading} fixed={false} />
       </Flex>
       <KbModal isOpen={isOpen} onClose={onClose} onOpen={onOpen}></KbModal>
-      <ConfirmDelete />
+
+      <KbDeleteAlert
+        isOpen={isOpenAlert}
+        onOpen={onOpenAlert}
+        onClose={onCloseAlert}
+        onConfirmClick={onclickDelKb}
+        deleteId={deleteId}
+      />
     </>
   );
 };

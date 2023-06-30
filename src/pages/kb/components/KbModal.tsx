@@ -24,25 +24,32 @@ import {
 import React, { useCallback, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/useToast';
+import { postCreateKb, putKbById } from '@/api/plugins/kb';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
 
 const KbModal = ({
   isOpen,
   onClose,
-  onOpen
+  onOpen,
+  kbId
 }: {
   onClose: () => void;
   onOpen: () => void;
   isOpen: boolean;
+  kbId?: string;
 }) => {
   const { toast } = useToast();
-
-  const { setLastKbId, kbDetail, getKbDetail, loadKbList, myKbList } = useUserStore();
+  const router = useRouter();
+  const { loadKbList, kbDetail, getKbDetail } = useUserStore();
   const [refresh, setRefresh] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
   const { getValues, formState, setValue, reset, register, handleSubmit } = useForm<KbItemType>({
     defaultValues: kbDetail
   });
 
+  console.log(kbDetail, 'kbDeta11111111111111111111il');
+  console.log(getValues(), 'naem');
   const { File, onOpen: onOpenSelectFile } = useSelectFile({
     fileType: '.jpg,.png',
     multiple: false
@@ -70,7 +77,59 @@ const KbModal = ({
     [setRefresh, setValue, toast]
   );
 
-  const initialRef = React.useRef(null);
+  const saveSubmitSuccess = useCallback(
+    async (data: KbItemType) => {
+      setBtnLoading(true);
+      try {
+        if (kbId) {
+          await putKbById({
+            id: kbId,
+            ...data
+          });
+          await getKbDetail(kbId, true);
+          toast({
+            title: '更新成功',
+            status: 'success'
+          });
+          onClose();
+          loadKbList(true);
+        } else {
+          const id = await postCreateKb({ ...data });
+          await loadKbList(true);
+          toast({
+            title: '创建成功',
+            status: 'success'
+          });
+          onClose();
+          router.replace(`/kb?kbId=${id}`);
+        }
+      } catch (err: any) {
+        toast({
+          title: err?.message || '更新失败',
+          status: 'error'
+        });
+      }
+      setBtnLoading(false);
+    },
+    [getKbDetail, kbId, loadKbList, onClose, router, toast]
+  );
+  const saveSubmitError = useCallback(() => {
+    // deep search message
+    const deepSearch = (obj: any): string => {
+      if (!obj) return '提交表单错误';
+      if (!!obj.message) {
+        return obj.message;
+      }
+      return deepSearch(Object.values(obj)[0]);
+    };
+    toast({
+      title: deepSearch(formState.errors),
+      status: 'error',
+      duration: 4000,
+      isClosable: true
+    });
+  }, [formState.errors, toast]);
+
   const InputRef = useRef<HTMLInputElement>(null);
   return (
     <>
@@ -139,7 +198,13 @@ const KbModal = ({
             <Button variant={'outline'} mr={3} onClick={onClose}>
               取消
             </Button>
-            <Button ml={3}>保存</Button>
+            <Button
+              isLoading={btnLoading}
+              ml={3}
+              onClick={handleSubmit(saveSubmitSuccess, saveSubmitError)}
+            >
+              保存
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
