@@ -51,10 +51,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
 
   return (
     <>
-      <Box
-        h={'100%'}
-        bgGradient={'linear(to-t,rgba(173, 206, 255, 0.05) 0%, rgba(173, 206, 255, 0.12) 100%)'}
-      >
+      <Box h={'100%'} background={'#F3F4F6'}>
         {isPc ? (
           pcUnShowLayoutRoute[router.pathname] ? (
             <Auth>{children}</Auth>
@@ -63,7 +60,12 @@ const Layout = ({ children }: { children: JSX.Element }) => {
               <Box h={'60px'} w={'100%'}>
                 <Navbar />
               </Box>
-              <Box h={'100%'} ml={'60px'} overflow={'overlay'}>
+              <Box
+                h={'calc(100% - 60px)'}
+                p={'0 30px'}
+                boxSizing={'content-box'}
+                overflow={'overlay'}
+              >
                 <Auth>{children}</Auth>
               </Box>
             </>

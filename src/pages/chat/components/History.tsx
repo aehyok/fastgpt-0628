@@ -89,6 +89,7 @@ const PcSliderBar = ({
       w={'100%'}
       h={'100%'}
       bg={'white'}
+      borderRadius={'md'}
       borderRight={['', theme.borders.base]}
     >
       {/* 新对话 */}

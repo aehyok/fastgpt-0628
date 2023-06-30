@@ -23,7 +23,7 @@ const Empty = ({
     <Box
       minH={'100%'}
       w={'85%'}
-      maxW={'600px'}
+      maxW={'1000px'}
       m={'auto'}
       py={'5vh'}
       alignItems={'center'}
@@ -42,15 +42,15 @@ const Empty = ({
       )}
 
       {showChatProblem && (
-        <>
+        <Flex>
           {/* version intro */}
-          <Card p={4} mb={10}>
+          <Card p={4} flex="1">
             <Markdown source={versionIntro} />
           </Card>
-          <Card p={4}>
+          <Card p={4} flex="1" ml="20px">
             <Markdown source={chatProblem} />
           </Card>
-        </>
+        </Flex>
       )}
     </Box>
   );

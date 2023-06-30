@@ -589,11 +589,12 @@ const Chat = ({ modelId, chatId }: { modelId: string; chatId: string }) => {
     <Flex
       h={'100%'}
       flexDirection={['column', 'row']}
+      align={'center'}
       backgroundColor={useColorModeValue('#F3F4F6', '')}
     >
       {/* pc always show history.  */}
       {(isPc || !modelId) && (
-        <SideBar>
+        <SideBar h={'95%'}>
           <History onclickDelHistory={onclickDelHistory} onclickExportChat={onclickExportChat} />
         </SideBar>
       )}
@@ -602,8 +603,11 @@ const Chat = ({ modelId, chatId }: { modelId: string; chatId: string }) => {
       {modelId && (
         <Flex
           position={'relative'}
-          h={[0, '100%']}
+          h={[0, '95%']}
           w={['100%', 0]}
+          background={'#fff'}
+          ml={'20px'}
+          borderRadius={'md'}
           flex={'1 0 0'}
           flexDirection={'column'}
         >
@@ -786,7 +790,7 @@ const Chat = ({ modelId, chatId }: { modelId: string; chatId: string }) => {
           </Box>
           {/* 发送区 */}
           {chatData.model.canUse ? (
-            <Box m={['0 auto', '20px auto']} w={'100%'} maxW={['auto', 'min(750px, 100%)']}>
+            <Box m={['0 auto', '20px auto']} w={'100%'} maxW={['auto', 'min(1000px, 100%)']}>
               <Box
                 py={'18px'}
                 position={'relative'}
