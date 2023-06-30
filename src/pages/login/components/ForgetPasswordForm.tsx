@@ -77,6 +77,7 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
       </Box>
 
       <Flex align={'center'} justifyContent={'flex-start'} mt={4} mb={4}>
+        <Box fontSize="sm">已想起？</Box>
         <Box
           float={'right'}
           fontSize="sm"
