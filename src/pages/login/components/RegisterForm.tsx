@@ -176,7 +176,7 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
         </FormControl>
         <Button
           type="submit"
-          mt={5}
+          mt={8}
           w={'100%'}
           size={['md', 'lg']}
           colorScheme="blue"
