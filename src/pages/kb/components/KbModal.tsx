@@ -1,0 +1,151 @@
+import { useSelectFile } from '@/hooks/useSelectFile';
+import { useUserStore } from '@/store/user';
+import { KbItemType } from '@/types/plugin';
+import { compressImg } from '@/utils/file';
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Tag,
+  Tooltip,
+  useDisclosure
+} from '@chakra-ui/react';
+import React, { useCallback, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useToast } from '@/hooks/useToast';
+import { QuestionOutlineIcon } from '@chakra-ui/icons';
+
+const KbModal = ({
+  isOpen,
+  onClose,
+  onOpen
+}: {
+  onClose: () => void;
+  onOpen: () => void;
+  isOpen: boolean;
+}) => {
+  const { toast } = useToast();
+
+  const { setLastKbId, kbDetail, getKbDetail, loadKbList, myKbList } = useUserStore();
+  const [refresh, setRefresh] = useState(false);
+  const { getValues, formState, setValue, reset, register, handleSubmit } = useForm<KbItemType>({
+    defaultValues: kbDetail
+  });
+
+  const { File, onOpen: onOpenSelectFile } = useSelectFile({
+    fileType: '.jpg,.png',
+    multiple: false
+  });
+
+  const onSelectFile = useCallback(
+    async (e: File[]) => {
+      const file = e[0];
+      if (!file) return;
+      try {
+        const base64 = await compressImg({
+          file,
+          maxW: 100,
+          maxH: 100
+        });
+        setValue('avatar', base64);
+        setRefresh((state: any) => !state);
+      } catch (err: any) {
+        toast({
+          title: typeof err === 'string' ? err : '头像选择异常',
+          status: 'warning'
+        });
+      }
+    },
+    [setRefresh, setValue, toast]
+  );
+
+  const initialRef = React.useRef(null);
+  const InputRef = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <Modal isOpen={isOpen} onClose={onClose} size={'lg'}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>维护知识库</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <Flex mt={5} alignItems={'center'}>
+              <Box flex={'0 0 60px'} w={0}>
+                头像
+              </Box>
+              <Avatar
+                src={getValues('avatar')}
+                w={['28px', '36px']}
+                h={['28px', '36px']}
+                cursor={'pointer'}
+                title={'点击切换头像'}
+                onClick={onOpenSelectFile}
+              />
+            </Flex>
+            <FormControl mt={5}>
+              <Flex alignItems={'center'} maxW={'350px'}>
+                <Box flex={'0 0 60px'} w={0}>
+                  名称
+                </Box>
+                <Input
+                  {...register('name', {
+                    required: '知识库名称不能为空'
+                  })}
+                />
+              </Flex>
+            </FormControl>
+            <Box>
+              <Flex mt={5} alignItems={'center'} maxW={'350px'} flexWrap={'wrap'}>
+                <Box flex={'0 0 60px'} w={0}>
+                  标签
+                  <Tooltip label={'仅用于记忆，用空格隔开多个标签'}>
+                    <QuestionOutlineIcon ml={1} />
+                  </Tooltip>
+                </Box>
+                <Input
+                  flex={1}
+                  ref={InputRef}
+                  placeholder={'标签,使用空格分割。'}
+                  onChange={(e) => {
+                    setValue('tags', e.target.value);
+                    setRefresh(!refresh);
+                  }}
+                />
+                <Box pl={'60px'} mt={2} w="100%">
+                  {getValues('tags')
+                    .split(' ')
+                    .filter((item) => item)
+                    .map((item, i) => (
+                      <Tag mr={2} mb={2} key={i} variant={'outline'} colorScheme={'blue'}>
+                        {item}
+                      </Tag>
+                    ))}
+                </Box>
+              </Flex>
+            </Box>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant={'outline'} mr={3} onClick={onClose}>
+              取消
+            </Button>
+            <Button ml={3}>保存</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <File onSelect={onSelectFile} />
+    </>
+  );
+};
+
+export default KbModal;
