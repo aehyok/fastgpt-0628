@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { Box, Flex, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, Text, Center } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import MyIcon from '../Icon';
 import { useUserStore } from '@/store/user';
 import { useChatStore } from '@/store/chat';
+import HeaderUserAction from './headerUserAction';
 import Avatar from '../Avatar';
 
 export enum NavbarTypeEnum {
@@ -64,40 +65,37 @@ const Navbar = () => {
   );
 
   return (
-    <Flex
-      flexDirection={'column'}
-      alignItems={'center'}
-      pt={6}
-      backgroundColor={'#465069'}
+    <Center
+      backgroundColor={'#F3F4F6'}
       h={'100%'}
-      w={'100%'}
       boxShadow={'4px 0px 4px 0px rgba(43, 45, 55, 0.01)'}
-      userSelect={'none'}
     >
-      {/* logo */}
-      <Box
-        mb={5}
-        border={'2px solid #fff'}
-        borderRadius={'36px'}
-        overflow={'hidden'}
-        cursor={'pointer'}
-        onClick={() => router.push('/number')}
+      <Flex
+        w={'100%'}
+        flexDirection={'row'}
+        align={'center'}
+        justify={'space-between'}
+        h={'100%'}
+        userSelect={'none'}
+        padding={'0 20px'}
+        borderBottom={'1px solid #E3E3EE'}
       >
-        <Avatar w={'36px'} h={'36px'} src={userInfo?.avatar} fallbackSrc={'/icon/human.png'} />
-      </Box>
-      {/* 导航列表 */}
-      <Box flex={1}>
-        {navbarList.map((item) => (
-          <Tooltip
-            label={item.label}
-            key={item.label}
-            placement={'right'}
-            openDelay={100}
-            gutter={-10}
-          >
+        {/* logo */}
+        <Box
+          border={'2px solid #465069'}
+          borderRadius={'36px'}
+          overflow={'hidden'}
+          cursor={'pointer'}
+          onClick={() => router.push('/number')}
+        >
+          <Avatar w={'36px'} h={'36px'} src={userInfo?.avatar} fallbackSrc={'/icon/human.png'} />
+        </Box>
+        {/* 导航列表 */}
+        <Flex flexDirection={'row'}>
+          {navbarList.map((item) => (
             <Flex
-              mb={3}
-              flexDirection={'column'}
+              key={item.label}
+              flexDirection={'row'}
               alignItems={'center'}
               justifyContent={'center'}
               onClick={() => {
@@ -105,45 +103,33 @@ const Navbar = () => {
                 router.push(item.link);
               }}
               cursor={'pointer'}
-              w={'60px'}
-              h={'45px'}
+              padding={'0 10px'}
+              h={'30px'}
+              ml={'10px'}
               _hover={{
-                color: '#ffffff'
+                backgroundColor: '#E3E3EE',
+                borderRadius: '10px'
               }}
               {...(item.activeLink.includes(router.pathname)
                 ? {
-                    color: '#ffffff ',
-                    backgroundImage: 'linear-gradient(270deg,#4e83fd,#3370ff)'
+                    color: '#1C64F2 ',
+                    backgroundColor: '#ffffff',
+                    boxShadow: '0 2px 5px -1px rgba(0,0,0,.05),0 2px 4px -2px rgba(0,0,0,.05)',
+                    borderRadius: '10px'
                   }
                 : {
                     color: '#9096a5',
                     backgroundColor: 'transparent'
                   })}
             >
-              <MyIcon name={item.icon as any} width={'22px'} height={'22px'} />
+              <MyIcon name={item.icon as any} width={'14px'} height={'14px'} />
+              <Text ml={'10px'}>{item.label}</Text>
             </Flex>
-          </Tooltip>
-        ))}
-      </Box>
-      <Box>
-        <Flex
-          mb={3}
-          flexDirection={'column'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          cursor={'pointer'}
-          w={'60px'}
-          h={'45px'}
-          color={'#9096a5'}
-          _hover={{
-            color: '#ffffff'
-          }}
-          onClick={() => window.open('https://github.com/c121914yu/FastGPT')}
-        >
-          <MyIcon name={'git'} width={'22px'} height={'22px'} />
+          ))}
         </Flex>
-      </Box>
-    </Flex>
+        <HeaderUserAction />
+      </Flex>
+    </Center>
   );
 };
 

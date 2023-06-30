@@ -589,7 +589,7 @@ const Chat = ({ modelId, chatId }: { modelId: string; chatId: string }) => {
     <Flex
       h={'100%'}
       flexDirection={['column', 'row']}
-      backgroundColor={useColorModeValue('#fdfdfd', '')}
+      backgroundColor={useColorModeValue('#F3F4F6', '')}
     >
       {/* pc always show history.  */}
       {(isPc || !modelId) && (

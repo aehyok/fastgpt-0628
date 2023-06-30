@@ -60,7 +60,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
             <Auth>{children}</Auth>
           ) : (
             <>
-              <Box h={'100%'} position={'fixed'} left={0} top={0} w={'60px'}>
+              <Box h={'60px'} w={'100%'}>
                 <Navbar />
               </Box>
               <Box h={'100%'} ml={'60px'} overflow={'overlay'}>
