@@ -73,7 +73,7 @@ const Login = () => {
       <Flex
         height="100%"
         w={'100%'}
-        maxW={'1040px'}
+        maxW={pageType === PageTypeEnum.login ? '1040px' : '600px'}
         maxH={['auto', 'max(560px,40vh)']}
         backgroundColor={'#fff'}
         alignItems={'center'}
@@ -92,10 +92,10 @@ const Login = () => {
             maxW={'600px'}
             height={'100%'}
             maxH={'450px'}
+            background={'#f2f2f2'}
             alt=""
           />
         )}
-
         <Box
           order={1}
           flex={`0 0 ${isPc ? '400px' : '100%'}`}
