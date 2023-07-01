@@ -65,7 +65,8 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
         });
         // aut register a model
         postCreateModel({
-          name: '应用1'
+          name: '应用1',
+          avatar: '/icon/logo.png'
         });
       } catch (error: any) {
         toast({

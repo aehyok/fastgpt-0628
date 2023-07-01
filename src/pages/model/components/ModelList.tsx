@@ -47,7 +47,7 @@ const ModelList = ({ modelId }: { modelId: string }) => {
       }
       setIsLoading(false);
     },
-    [myModels.length, refreshModel, router, setIsLoading, toast]
+    [myModels.length, onClose, refreshModel, router, setIsLoading, toast]
   );
 
   const models = useMemo(

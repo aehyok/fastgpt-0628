@@ -23,7 +23,7 @@ const KbDeleteAlert = ({
   onConfirmClick: (deleteId?: string) => void;
   deleteId?: string;
 }) => {
-  const cancelRef = React.useRef();
+  const cancelRef = React.useRef(null);
 
   return (
     <>
