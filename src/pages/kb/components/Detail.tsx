@@ -143,7 +143,7 @@ const Detail = ({ kbId }: { kbId: string }) => {
 
   return (
     <Box h={'100%'} p={5} overflow={'overlay'} position={'relative'}>
-      <Card p={6} mt={5}>
+      <Card p={3} mt={2}>
         <DataCard kbId={kbId} />
       </Card>
     </Box>

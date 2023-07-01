@@ -128,6 +128,7 @@ const KbList = ({ kbId }: { kbId: string }) => {
         w={'100%'}
         h={'100%'}
         bg={'white'}
+        mt={'25px'}
         borderRight={['', theme.borders.base]}
       >
         <Flex w={'90%'} my={5} mx={'auto'}>
