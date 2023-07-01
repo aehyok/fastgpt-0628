@@ -51,7 +51,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
 
   return (
     <>
-      <Box h={'100%'} background={'#F3F4F6'}>
+      <Box h={'100%'} background={'#F3F4F6'} overflow={'overlay'}>
         {isPc ? (
           pcUnShowLayoutRoute[router.pathname] ? (
             <Auth>{children}</Auth>
