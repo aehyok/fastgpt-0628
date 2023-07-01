@@ -8,8 +8,9 @@ import { Model } from '@/service/models/model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
-    const { name } = req.body as {
+    const { name, avatar } = req.body as {
       name: string;
+      avatar: string;
     };
 
     if (!name) {
@@ -32,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // 创建模型
     const response = await Model.create({
       name,
+      avatar,
       userId,
       status: ModelStatusEnum.running
     });
