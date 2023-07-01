@@ -14,6 +14,7 @@ export const useSelectFile = (props?: { fileType?: string; multiple?: boolean })
           accept={fileType}
           multiple={multiple}
           onChange={(e) => {
+            console.log(e.target.files);
             if (!e.target.files || e.target.files?.length === 0) return;
             onSelect(Array.from(e.target.files));
           }}

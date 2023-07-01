@@ -9,11 +9,15 @@ import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '@/store/user';
 import { useLoading } from '@/hooks/useLoading';
 import ModelEditForm from './components/ModelEditForm';
+import { useConfirm } from '@/hooks/useConfirm';
 
 const ModelDetail = ({ modelId, isPc }: { modelId: string; isPc: boolean }) => {
   const { toast } = useToast();
   const router = useRouter();
   const { userInfo, modelDetail, loadModelDetail, refreshModel, setLastModelId } = useUserStore();
+  const { openConfirm, ConfirmChild } = useConfirm({
+    content: '确认删除该应用?'
+  });
   const { Loading, setIsLoading } = useLoading();
   const [btnLoading, setBtnLoading] = useState(false);
 
@@ -132,7 +136,7 @@ const ModelDetail = ({ modelId, isPc }: { modelId: string; isPc: boolean }) => {
   }, [router]);
 
   return (
-    <Box h={'100%'} p={5} overflow={'overlay'} position={'relative'}>
+    <Box h={'100%'} px={5} overflow={'overlay'} position={'relative'}>
       {/* 头部 */}
       <Card px={6} py={3}>
         {isPc ? (
@@ -141,7 +145,12 @@ const ModelDetail = ({ modelId, isPc }: { modelId: string; isPc: boolean }) => {
               {modelDetail.name}
             </Box>
             <Box flex={1} />
-            <Button variant={'outline'} onClick={handlePreviewChat}>
+            {isOwner && (
+              <Button variant={'solid'} colorScheme={'red'} onClick={openConfirm(handleDelModel)}>
+                删除
+              </Button>
+            )}
+            <Button variant={'outline'} ml={4} onClick={handlePreviewChat}>
               开始对话
             </Button>
             {isOwner && (
@@ -173,6 +182,16 @@ const ModelDetail = ({ modelId, isPc }: { modelId: string; isPc: boolean }) => {
               </Box>
             </Flex>
             <Box mt={4} textAlign={'right'}>
+              {isOwner && (
+                <Button
+                  variant={'solid'}
+                  size={'sm'}
+                  colorScheme={'red'}
+                  onClick={openConfirm(handleDelModel)}
+                >
+                  删除
+                </Button>
+              )}
               <Button variant={'outline'} size={'sm'} onClick={handlePreviewChat}>
                 开始对话
               </Button>
@@ -201,15 +220,14 @@ const ModelDetail = ({ modelId, isPc }: { modelId: string; isPc: boolean }) => {
           </>
         )}
       </Card>
-      <Grid mt={5} gridTemplateColumns={['1fr', '1fr 1fr']} gridGap={5}>
-        <ModelEditForm
-          formHooks={formHooks}
-          handleDelModel={handleDelModel}
-          isOwner={isOwner}
-          canRead={canRead}
-        />
-      </Grid>
+      <ModelEditForm
+        formHooks={formHooks}
+        handleDelModel={handleDelModel}
+        isOwner={isOwner}
+        canRead={canRead}
+      />
       <Loading loading={isLoading} fixed={false} />
+      <ConfirmChild />
     </Box>
   );
 };

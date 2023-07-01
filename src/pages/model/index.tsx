@@ -26,17 +26,24 @@ const Model = ({ modelId }: { modelId: string }) => {
   }, [isPc, lastModelId, modelId, router]);
 
   return (
-    <Flex h={'100%'} position={'relative'} overflow={'hidden'}>
-      {/* 模型列表 */}
-      {(isPc || !modelId) && (
-        <SideBar w={['100%', '0 0 250px', '0 0 270px', '0 0 290px']}>
-          <ModelList modelId={modelId} />
-        </SideBar>
-      )}
-      <Box flex={1} h={'100%'} position={'relative'}>
-        {modelId && <ModelDetail modelId={modelId} isPc={isPc} />}
-      </Box>
-    </Flex>
+    <>
+      <Flex h={'100%'} align={'center'} position={'relative'} overflow={'hidden'}>
+        {/* 模型列表 */}
+        {(isPc || !modelId) && (
+          <SideBar
+            w={['100%', '0 0 250px', '0 0 270px', '0 0 290px']}
+            h={'95%'}
+            borderRadius={'6px'}
+            overflow="hidden"
+          >
+            <ModelList modelId={modelId} />
+          </SideBar>
+        )}
+        <Box flex={1} h={'95%'} position={'relative'}>
+          {modelId && <ModelDetail modelId={modelId} isPc={isPc} />}
+        </Box>
+      </Flex>
+    </>
   );
 };
 

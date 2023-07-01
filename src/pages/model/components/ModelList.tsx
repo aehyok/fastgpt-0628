@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Box, Flex, useTheme, Input, IconButton, Tooltip } from '@chakra-ui/react';
+import { Box, Flex, useTheme, Input, IconButton, Tooltip, useDisclosure } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import MyIcon from '@/components/Icon';
@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/useToast';
 import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '@/store/user';
 import Avatar from '@/components/Avatar';
+import ModelModal from './ModelModal';
 
 const ModelList = ({ modelId }: { modelId: string }) => {
   const theme = useTheme();
@@ -17,28 +18,37 @@ const ModelList = ({ modelId }: { modelId: string }) => {
   const { Loading, setIsLoading } = useLoading();
   const { myModels, myCollectionModels, loadMyModels, refreshModel } = useUserStore();
   const [searchText, setSearchText] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   /* 加载模型 */
   const { isLoading } = useQuery(['loadModels'], () => loadMyModels(false));
 
-  const onclickCreateModel = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const id = await postCreateModel({ name: `AI应用${myModels.length + 1}` });
-      toast({
-        title: '创建成功',
-        status: 'success'
-      });
-      refreshModel.freshMyModels();
-      router.push(`/model?modelId=${id}`);
-    } catch (err: any) {
-      toast({
-        title: typeof err === 'string' ? err : err.message || '出现了意外',
-        status: 'error'
-      });
-    }
-    setIsLoading(false);
-  }, [myModels.length, refreshModel, router, setIsLoading, toast]);
+  const onclickCreateModel = useCallback(
+    async (name: string, avatar: string) => {
+      setIsLoading(true);
+      try {
+        const id = await postCreateModel({
+          name: name || `AI应用${myModels.length + 1}`,
+          avatar: avatar
+        });
+        onClose();
+        toast({
+          title: '创建成功',
+          status: 'success'
+        });
+        refreshModel.freshMyModels();
+        router.push(`/model?modelId=${id}`);
+      } catch (err: any) {
+        onClose();
+        toast({
+          title: typeof err === 'string' ? err : err.message || '出现了意外',
+          status: 'error'
+        });
+      }
+      setIsLoading(false);
+    },
+    [myModels.length, refreshModel, router, setIsLoading, toast]
+  );
 
   const models = useMemo(
     () =>
@@ -101,7 +111,7 @@ const ModelList = ({ modelId }: { modelId: string }) => {
             icon={<AddIcon />}
             aria-label={''}
             variant={'outline'}
-            onClick={onclickCreateModel}
+            onClick={onOpen}
           />
         </Tooltip>
       </Flex>
@@ -159,6 +169,12 @@ const ModelList = ({ modelId }: { modelId: string }) => {
         )}
       </Box>
       <Loading loading={isLoading} fixed={false} />
+      <ModelModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpen={onOpen}
+        onSubmit={onclickCreateModel}
+      ></ModelModal>
     </Flex>
   );
 };
