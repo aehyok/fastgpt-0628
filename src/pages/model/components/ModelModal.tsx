@@ -110,10 +110,11 @@ const ModelModal = ({
               ml={3}
               onClick={() => {
                 onSubmit(getValues('name'), getValues('avatar'));
-                setTimeout(() => {
-                  reset();
-                  setRefresh(!refresh);
-                }, 1000);
+                reset();
+                // setTimeout(() => {
+
+                //   setRefresh(!refresh);
+                // }, 1000);
               }}
             >
               保存
