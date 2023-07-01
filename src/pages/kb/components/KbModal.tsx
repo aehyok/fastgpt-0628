@@ -18,35 +18,68 @@ import {
   ModalHeader,
   ModalOverlay,
   Tag,
-  Tooltip,
-  useDisclosure
+  Tooltip
 } from '@chakra-ui/react';
-import React, { useCallback, useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/useToast';
 import { postCreateKb, putKbById } from '@/api/plugins/kb';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
+import { getErrText } from '@/utils/tools';
 
 const KbModal = ({
   isOpen,
   onClose,
-  onOpen,
-  kbId
+  onOpen
 }: {
   onClose: () => void;
   onOpen: () => void;
   isOpen: boolean;
-  kbId?: string;
 }) => {
   const { toast } = useToast();
   const router = useRouter();
-  const { loadKbList, kbDetail, getKbDetail } = useUserStore();
+  const { setLastKbId, lastKbId, kbDetail, getKbDetail, loadKbList, myKbList } = useUserStore();
   const [refresh, setRefresh] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
+
   const { getValues, formState, setValue, reset, register, handleSubmit } = useForm<KbItemType>({
     defaultValues: kbDetail
   });
+
+  useEffect(() => {
+    reset(kbDetail);
+  }, [kbDetail, reset]);
+
+  // useQuery([kbId, myKbList], () => {
+  //   console.log('useQuery', kbId)
+  //   kbId? getKbDetail(kbId): ''
+
+  // }, {
+  //   onSuccess(res: any) {
+  //     kbId && setLastKbId(kbId);
+  //     if (res) {
+  //       reset(res);
+  //       if (InputRef.current) {
+  //         InputRef.current.value = res.tags;
+  //       }
+  //     }
+  //   },
+  //   onError(err: any) {
+  //     toast({
+  //       title: getErrText(err, '获取知识库异常'),
+  //       status: 'error'
+  //     });
+  //     loadKbList(true);
+  //     setLastKbId('');
+  //     router.replace(`/kb?kbId=${myKbList[0]?._id || ''}`);
+  //   }
+  // });
+
+  // const { getValues, formState, setValue, reset, register, handleSubmit } = useForm<KbItemType>({
+  //   defaultValues: kbDetail
+  // });
 
   console.log(kbDetail, 'kbDeta11111111111111111111il');
   console.log(getValues(), 'naem');
@@ -81,18 +114,19 @@ const KbModal = ({
     async (data: KbItemType) => {
       setBtnLoading(true);
       try {
-        if (kbId) {
+        if (kbDetail._id) {
           await putKbById({
-            id: kbId,
+            id: kbDetail._id,
             ...data
           });
-          await getKbDetail(kbId, true);
+          await getKbDetail(kbDetail._id, true);
           toast({
             title: '更新成功',
             status: 'success'
           });
           onClose();
           loadKbList(true);
+          // reset(defaultKbDetail);
         } else {
           const id = await postCreateKb({ ...data });
           await loadKbList(true);
@@ -101,6 +135,7 @@ const KbModal = ({
             status: 'success'
           });
           onClose();
+          // reset(defaultKbDetail);
           router.replace(`/kb?kbId=${id}`);
         }
       } catch (err: any) {
@@ -111,7 +146,7 @@ const KbModal = ({
       }
       setBtnLoading(false);
     },
-    [getKbDetail, kbId, loadKbList, onClose, router, toast]
+    [getKbDetail, kbDetail._id, loadKbList, onClose, router, toast]
   );
   const saveSubmitError = useCallback(() => {
     // deep search message

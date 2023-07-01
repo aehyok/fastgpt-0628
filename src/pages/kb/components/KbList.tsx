@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import {
   Box,
   Flex,
@@ -26,8 +26,9 @@ import { useUserStore } from '@/store/user';
 import MyIcon from '@/components/Icon';
 import Avatar from '@/components/Avatar';
 import KbModal from './KbModal';
-import { useConfirm } from '@/hooks/useConfirm';
+// import { useConfirm } from '@/hooks/useConfirm';
 import KbDeleteAlert from './KbDeleteAlert';
+import { defaultKbDetail } from '@/constants/kb';
 
 const KbList = ({ kbId }: { kbId: string }) => {
   const theme = useTheme();
@@ -38,12 +39,12 @@ const KbList = ({ kbId }: { kbId: string }) => {
   const [searchText, setSearchText] = useState('');
   const [deleteId, setDeleteId] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { setLastKbId, kbDetail, getKbDetail } = useUserStore();
+  const { isOpen: isOpenAlert, onOpen: onOpenAlert, onClose: onCloseAlert } = useDisclosure();
+  const { setLastKbId, setKbDetail, kbDetail, getKbDetail } = useUserStore();
   const kbs = useMemo(
     () => myKbList.filter((item) => new RegExp(searchText, 'ig').test(item.name + item.tags)),
     [myKbList, searchText]
   );
-
   /* 加载模型 */
   const { isLoading } = useQuery(['loadModels'], () => loadKbList(false));
 
@@ -58,6 +59,9 @@ const KbList = ({ kbId }: { kbId: string }) => {
         //   title: '创建成功',
         //   status: 'success'
         // });
+        setKbDetail(defaultKbDetail);
+        onOpen();
+        console.log('-----isOpen-', isOpen);
         onOpen();
         // router.replace(`/kb?kbId=${id}`);
       } catch (err: any) {
@@ -69,7 +73,7 @@ const KbList = ({ kbId }: { kbId: string }) => {
       setIsLoading(false);
     },
     // [loadKbList, myKbList.length, onOpen, router, setIsLoading, toast]
-    [onOpen, setIsLoading, toast]
+    [isOpen, onOpen, setIsLoading, setKbDetail, toast]
   );
 
   const handleClick = (event: any) => {
@@ -83,12 +87,12 @@ const KbList = ({ kbId }: { kbId: string }) => {
   };
 
   const editKbClick = useCallback(
-    (item: any) => {
-      console.log(item, 'edit');
+    async (item: any) => {
       setLastKbId(item._id);
+      setKbDetail(item);
       onOpen();
     },
-    [onOpen, setLastKbId]
+    [onOpen, setKbDetail, setLastKbId]
   );
 
   /* 点击删除 */
@@ -114,8 +118,6 @@ const KbList = ({ kbId }: { kbId: string }) => {
     },
     [kbId, toast, router, myKbList, loadKbList]
   );
-
-  const { isOpen: isOpenAlert, onOpen: onOpenAlert, onClose: onCloseAlert } = useDisclosure();
 
   return (
     <>

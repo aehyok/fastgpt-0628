@@ -36,6 +36,7 @@ type State = {
   myKbList: KbItemType[];
   loadKbList: (init?: boolean) => Promise<KbItemType[]>;
   kbDetail: KbItemType;
+  setKbDetail: (kbDetailItem: KbItemType) => void;
   getKbDetail: (id: string, init?: boolean) => Promise<KbItemType>;
 };
 
@@ -119,6 +120,11 @@ export const useUserStore = create<State>()(
         setLastKbId(id: string) {
           set((state) => {
             state.lastKbId = id;
+          });
+        },
+        setKbDetail(model: KbItemType) {
+          set((state) => {
+            state.kbDetail = model;
           });
         },
         myKbList: [],

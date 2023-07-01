@@ -14,7 +14,9 @@ const Kb = ({ kbId }: { kbId: string }) => {
 
   // redirect
   useEffect(() => {
+    console.log('kb index-11', kbId, lastKbId);
     if (isPc && !kbId && lastKbId) {
+      console.log('kb index -22', kbId, lastKbId);
       router.replace(`/kb?kbId=${lastKbId}`);
     }
   }, [isPc, kbId, lastKbId, router]);

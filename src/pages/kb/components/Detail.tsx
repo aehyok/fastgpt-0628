@@ -37,26 +37,26 @@ const Detail = ({ kbId }: { kbId: string }) => {
     defaultValues: kbDetail
   });
 
-  useQuery([kbId, myKbList], () => getKbDetail(kbId), {
-    onSuccess(res) {
-      kbId && setLastKbId(kbId);
-      if (res) {
-        reset(res);
-        if (InputRef.current) {
-          InputRef.current.value = res.tags;
-        }
-      }
-    },
-    onError(err: any) {
-      toast({
-        title: getErrText(err, '获取知识库异常'),
-        status: 'error'
-      });
-      loadKbList(true);
-      setLastKbId('');
-      router.replace(`/kb?kbId=${myKbList[0]?._id || ''}`);
-    }
-  });
+  // useQuery([kbId, myKbList], () => getKbDetail(kbId), {
+  //   onSuccess(res) {
+  //     kbId && setLastKbId(kbId);
+  //     if (res) {
+  //       reset(res);
+  //       if (InputRef.current) {
+  //         InputRef.current.value = res.tags;
+  //       }
+  //     }
+  //   },
+  //   onError(err: any) {
+  //     toast({
+  //       title: getErrText(err, '获取知识库异常'),
+  //       status: 'error'
+  //     });
+  //     loadKbList(true);
+  //     setLastKbId('');
+  //     router.replace(`/kb?kbId=${myKbList[0]?._id || ''}`);
+  //   }
+  // });
 
   /* 点击删除 */
   const onclickDelKb = useCallback(async () => {
