@@ -28,7 +28,7 @@ import { postCreateKb, putKbById } from '@/api/plugins/kb';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import { getErrText } from '@/utils/tools';
-
+import { defaultKbDetail } from '@/constants/kb';
 const KbModal = ({
   isOpen,
   onClose,
@@ -40,7 +40,7 @@ const KbModal = ({
 }) => {
   const { toast } = useToast();
   const router = useRouter();
-  const { setLastKbId, lastKbId, kbDetail, getKbDetail, loadKbList, myKbList } = useUserStore();
+  const { kbDetail, getKbDetail, loadKbList } = useUserStore();
   const [refresh, setRefresh] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
 
@@ -50,7 +50,8 @@ const KbModal = ({
 
   useEffect(() => {
     reset(kbDetail);
-  }, [kbDetail, reset]);
+    console.log(getValues(), 'useEffect----11111111');
+  }, [getValues, kbDetail, reset]);
 
   // useQuery([kbId, myKbList], () => {
   //   console.log('useQuery', kbId)
@@ -81,8 +82,8 @@ const KbModal = ({
   //   defaultValues: kbDetail
   // });
 
-  console.log(kbDetail, 'kbDeta11111111111111111111il');
-  console.log(getValues(), 'naem');
+  console.log(kbDetail, 'kbDetail222222222222222222');
+  console.log(getValues(), 'getValues33333333333333');
   const { File, onOpen: onOpenSelectFile } = useSelectFile({
     fileType: '.jpg,.png',
     multiple: false
@@ -92,12 +93,14 @@ const KbModal = ({
     async (e: File[]) => {
       const file = e[0];
       if (!file) return;
+      console.log('onSelectFile');
       try {
         const base64 = await compressImg({
           file,
           maxW: 100,
           maxH: 100
         });
+        console.log('base64', base64);
         setValue('avatar', base64);
         setRefresh((state: any) => !state);
       } catch (err: any) {
@@ -126,8 +129,9 @@ const KbModal = ({
           });
           onClose();
           loadKbList(true);
-          // reset(defaultKbDetail);
+          reset(defaultKbDetail);
         } else {
+          console.log(data, '----data----');
           const id = await postCreateKb({ ...data });
           await loadKbList(true);
           toast({
@@ -135,7 +139,7 @@ const KbModal = ({
             status: 'success'
           });
           onClose();
-          // reset(defaultKbDetail);
+          reset(defaultKbDetail);
           router.replace(`/kb?kbId=${id}`);
         }
       } catch (err: any) {
@@ -146,7 +150,7 @@ const KbModal = ({
       }
       setBtnLoading(false);
     },
-    [getKbDetail, kbDetail._id, loadKbList, onClose, router, toast]
+    [getKbDetail, kbDetail._id, loadKbList, onClose, reset, router, toast]
   );
   const saveSubmitError = useCallback(() => {
     // deep search message

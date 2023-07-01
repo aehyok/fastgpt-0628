@@ -5,9 +5,10 @@ import { authUser } from '@/service/utils/auth';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
-    const { name, tags } = req.body as {
+    const { name, tags, avatar } = req.body as {
       name: string;
       tags: string[];
+      avatar: string;
     };
 
     if (!name) {
@@ -22,7 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const { _id } = await KB.create({
       name,
       userId,
-      tags
+      tags,
+      avatar
     });
 
     jsonRes(res, { data: _id });

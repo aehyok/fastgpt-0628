@@ -59,10 +59,11 @@ const KbList = ({ kbId }: { kbId: string }) => {
         //   title: '创建成功',
         //   status: 'success'
         // });
+        console.log(defaultKbDetail);
         setKbDetail(defaultKbDetail);
+
         onOpen();
-        console.log('-----isOpen-', isOpen);
-        onOpen();
+        console.log('-----isOpen-', isOpen, kbDetail);
         // router.replace(`/kb?kbId=${id}`);
       } catch (err: any) {
         toast({
@@ -73,7 +74,7 @@ const KbList = ({ kbId }: { kbId: string }) => {
       setIsLoading(false);
     },
     // [loadKbList, myKbList.length, onOpen, router, setIsLoading, toast]
-    [isOpen, onOpen, setIsLoading, setKbDetail, toast]
+    [isOpen, kbDetail, onOpen, setIsLoading, setKbDetail, toast]
   );
 
   const handleClick = (event: any) => {
