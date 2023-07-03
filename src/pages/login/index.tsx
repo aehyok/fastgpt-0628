@@ -73,13 +73,13 @@ const Login = () => {
       <Flex
         height="100%"
         w={'100%'}
-        maxW={pageType === PageTypeEnum.login ? '1040px' : '600px'}
-        maxH={['auto', 'max(560px,40vh)']}
+        maxW={pageType === PageTypeEnum.login ? '1040px' : '440px'}
+        maxH={['auto', 'max(440px,40vh)']}
         backgroundColor={'#fff'}
         alignItems={'center'}
         justifyContent={'center'}
-        py={[5, 10]}
-        px={'5vw'}
+        py={['20px', '20px']}
+        px={'20px'}
         borderRadius={isPc ? 'md' : 'none'}
         gap={5}
       >
@@ -89,7 +89,7 @@ const Login = () => {
             order={pageType === PageTypeEnum.login ? 0 : 2}
             flex={'1 0 0'}
             w="0"
-            maxW={'600px'}
+            maxW={'450px'}
             height={'100%'}
             maxH={'450px'}
             background={'#f2f2f2'}
