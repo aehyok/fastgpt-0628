@@ -73,7 +73,7 @@ const Login = () => {
       <Flex
         height="100%"
         w={'100%'}
-        maxW={pageType === PageTypeEnum.login ? '1040px' : '440px'}
+        maxW={pageType === PageTypeEnum.login ? '840px' : '440px'}
         maxH={['auto', 'max(440px,40vh)']}
         backgroundColor={'#fff'}
         alignItems={'center'}
