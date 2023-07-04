@@ -29,7 +29,8 @@ const HeaderUserAction = () => {
           </Flex>
         </MenuItem>
         <MenuDivider />
-        <MenuItem onClick={() => router.push('/number')}>设置</MenuItem>
+        <MenuItem onClick={() => router.push('/openapi')}>API KEY 设置</MenuItem>
+        <MenuItem onClick={() => router.push('/number')}>账号</MenuItem>
         <MenuItem onClick={onclickLogOut}>退出登录</MenuItem>
       </MenuList>
     </Menu>

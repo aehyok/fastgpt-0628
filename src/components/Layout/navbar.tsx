@@ -47,18 +47,6 @@ const Navbar = () => {
         icon: 'promotion',
         link: '/promotion',
         activeLink: ['/promotion']
-      },
-      {
-        label: '开发',
-        icon: 'develop',
-        link: '/openapi',
-        activeLink: ['/openapi']
-      },
-      {
-        label: '账号',
-        icon: 'user',
-        link: '/number',
-        activeLink: ['/number']
       }
     ],
     [lastChatId, lastChatModelId, lastModelId]
