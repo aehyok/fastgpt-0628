@@ -16,21 +16,30 @@ to {
 }
 `;
 
-const shapeImgs = [
-  { right: '140px', top: '500px' },
-  { right: '900px', top: '200px' },
-  { right: '300px', top: '160px' },
-  { left: '300px', top: '660px' },
-  { left: '250px', top: '300px' },
-  { left: '800px', top: '680px' }
-];
-
 const Home = () => {
   const router = useRouter();
   const { inviterId } = router.query as { inviterId: string };
   const { data } = useMarkdown({ url: '/intro.md' });
   const { isPc } = useGlobalStore();
   const rotationAnimation = `${rotation} infinite 2s linear`;
+
+  const shapeImgs = [
+    { right: '140px', top: '500px' },
+    { right: '900px', top: '200px' },
+    { right: '300px', top: '160px' },
+    { left: '300px', top: '660px' },
+    { left: '250px', top: '300px' },
+    { left: '800px', top: '680px' }
+  ];
+
+  const phoneShapeImgs = [
+    { right: '40px', top: '100px' },
+    { left: '30px', top: '280px' },
+    { right: '50px', bottom: '60px' },
+    { left: '20px', top: '30px' },
+    { left: '40px', bottom: '200px' },
+    { right: '80px', bottom: '400px' }
+  ];
 
   useEffect(() => {
     if (inviterId) {
@@ -43,7 +52,7 @@ const Home = () => {
   return (
     <Box>
       <Flex
-        flexDirection={'row'}
+        flexDirection={isPc ? 'row' : 'column-reverse'}
         alignItems={'center'}
         justifyContent={'space-around'}
         h={'100vh'}
@@ -51,7 +60,12 @@ const Home = () => {
       >
         {/* <Box id={'particles-js'} position={'absolute'} top={0} left={0} right={0} bottom={0} /> */}
 
-        <Flex flexDirection={'column'} alignItems={'center'} pl={'80px'} userSelect={'none'}>
+        <Flex
+          flexDirection={'column'}
+          alignItems={'center'}
+          pl={isPc ? '80px' : 0}
+          userSelect={'none'}
+        >
           <Image src="/icon/logo.png" w={['70px', '120px']} h={['70px', '120px']} alt={''}></Image>
           <Box
             fontWeight={'bold'}
@@ -78,11 +92,11 @@ const Home = () => {
             点击开始
           </Button>
         </Flex>
-        <Image src="/imgs/b1.png" w={'600px'} alt={''} />
-        {shapeImgs.map((item, index) => (
+        <Image src="/imgs/b1.png" w={isPc ? '600px' : '300px'} alt={''} />
+        {(isPc ? shapeImgs : phoneShapeImgs).map((item, index) => (
           <Image
             src={`/imgs/shape${index + 1}.png`}
-            w={'50px'}
+            w={isPc ? '50px' : '36px'}
             alt={''}
             position={'absolute'}
             animation={rotationAnimation}

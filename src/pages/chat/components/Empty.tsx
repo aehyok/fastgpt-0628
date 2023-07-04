@@ -4,6 +4,7 @@ import { useMarkdown } from '@/hooks/useMarkdown';
 import Markdown from '@/components/Markdown';
 import { LOGO_ICON } from '@/constants/chat';
 import Avatar from '@/components/Avatar';
+import { useGlobalStore } from '@/store/global';
 
 const Empty = ({
   showChatProblem,
@@ -18,6 +19,7 @@ const Empty = ({
 }) => {
   const { data: chatProblem } = useMarkdown({ url: '/chatProblem.md' });
   const { data: versionIntro } = useMarkdown({ url: '/versionIntro.md' });
+  const { isPc } = useGlobalStore();
 
   return (
     <Box
@@ -42,12 +44,12 @@ const Empty = ({
       )}
 
       {showChatProblem && (
-        <Flex>
+        <Flex flexDirection={isPc ? 'row' : 'column'}>
           {/* version intro */}
           <Card p={4} flex="1">
             <Markdown source={versionIntro} />
           </Card>
-          <Card p={4} flex="1" ml="20px">
+          <Card p={4} flex="1" ml={isPc ? '20px' : '0'} mt={isPc ? '0' : '20px'}>
             <Markdown source={chatProblem} />
           </Card>
         </Flex>

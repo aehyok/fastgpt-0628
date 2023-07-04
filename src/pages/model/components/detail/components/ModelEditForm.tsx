@@ -72,7 +72,7 @@ const ModelEditForm = ({
   const { modelId } = router.query as { modelId: string };
   const [refresh, setRefresh] = useState(false);
   const { toast } = useToast();
-  const { setLoading } = useGlobalStore();
+  const { setLoading, isPc } = useGlobalStore();
   const { loadKbList } = useUserStore();
 
   const { openConfirm, ConfirmChild } = useConfirm({
@@ -210,85 +210,84 @@ ${e.password ? `密码为: ${e.password}` : ''}`;
     <Tabs mt={'20px'}>
       <TabList>
         <Tab>基础信息</Tab>
-        {canRead && <Tab>模型效果</Tab>}
         {isOwner && <Tab>分享设置</Tab>}
-        <Tab>关联的知识库</Tab>
         <Tab>免登录聊天窗口</Tab>
       </TabList>
 
       <TabPanels>
         {/* basic info */}
         <TabPanel px={0}>
-          <Card p={4}>
-            <Box fontWeight={'bold'}>基本信息</Box>
-            <Flex alignItems={'center'} mt={4}>
-              <Box flex={'0 0 80px'} w={0}>
-                modelId
-              </Box>
-              <Box userSelect={'all'}>{getValues('_id')}</Box>
-            </Flex>
-            <Flex mt={4} alignItems={'center'}>
-              <Box flex={'0 0 80px'} w={0}>
-                头像
-              </Box>
-              <Avatar
-                src={getValues('avatar')}
-                w={['28px', '36px']}
-                h={['28px', '36px']}
-                cursor={isOwner ? 'pointer' : 'default'}
-                title={'点击切换头像'}
-                onClick={() => isOwner && onOpenSelectFile()}
-              />
-            </Flex>
-            <FormControl mt={4}>
-              <Flex alignItems={'center'}>
+          <Flex flexDirection={isPc ? 'row' : 'column'}>
+            <Card p={4} flex={1}>
+              <Box fontWeight={'bold'}>基本信息</Box>
+              <Flex alignItems={'center'} mt={4}>
                 <Box flex={'0 0 80px'} w={0}>
-                  名称
+                  modelId
                 </Box>
-                <Input
-                  isDisabled={!isOwner}
-                  {...register('name', {
-                    required: '展示名称不能为空'
-                  })}
-                ></Input>
+                <Box userSelect={'all'}>{getValues('_id')}</Box>
               </Flex>
-            </FormControl>
+              <Flex mt={4} alignItems={'center'}>
+                <Box flex={'0 0 80px'} w={0}>
+                  头像
+                </Box>
+                <Avatar
+                  src={getValues('avatar')}
+                  w={['28px', '36px']}
+                  h={['28px', '36px']}
+                  cursor={isOwner ? 'pointer' : 'default'}
+                  title={'点击切换头像'}
+                  onClick={() => isOwner && onOpenSelectFile()}
+                />
+              </Flex>
+              <FormControl mt={4}>
+                <Flex alignItems={'center'}>
+                  <Box flex={'0 0 80px'} w={0}>
+                    名称
+                  </Box>
+                  <Input
+                    isDisabled={!isOwner}
+                    {...register('name', {
+                      required: '展示名称不能为空'
+                    })}
+                  ></Input>
+                </Flex>
+              </FormControl>
 
-            <Flex alignItems={'center'} mt={5}>
-              <Box flex={'0 0 80px'} w={0}>
-                对话模型
-              </Box>
-              <Select
-                isDisabled={!isOwner}
-                {...register('chat.chatModel', {
-                  onChange() {
-                    setRefresh((state) => !state);
-                  }
-                })}
-              >
-                {chatModelList.map((item) => (
-                  <option key={item.chatModel} value={item.chatModel}>
-                    {item.name}
-                  </option>
-                ))}
-              </Select>
-            </Flex>
-            <Flex alignItems={'center'} mt={5}>
-              <Box flex={'0 0 80px'} w={0}>
-                价格
-              </Box>
-              <Box>
-                {formatPrice(ChatModelMap[getValues('chat.chatModel')]?.price, 1000)}
-                元/1K tokens(包括上下文和回答)
-              </Box>
-            </Flex>
-            <Flex alignItems={'center'} mt={5}>
-              <Box flex={'0 0 80px'} w={0}>
-                收藏人数:
-              </Box>
-              <Box>{getValues('share.collection')}人</Box>
-            </Flex>
-            {/* {isOwner && (
+              <Flex alignItems={'center'} mt={5}>
+                <Box flex={'0 0 80px'} w={0}>
+                  对话模型
+                </Box>
+                <Select
+                  isDisabled={!isOwner}
+                  {...register('chat.chatModel', {
+                    onChange() {
+                      setRefresh((state) => !state);
+                    }
+                  })}
+                >
+                  {chatModelList.map((item) => (
+                    <option key={item.chatModel} value={item.chatModel}>
+                      {item.name}
+                    </option>
+                  ))}
+                </Select>
+              </Flex>
+              <Flex alignItems={'center'} mt={5}>
+                <Box flex={'0 0 80px'} w={0}>
+                  价格
+                </Box>
+                <Box>
+                  {formatPrice(ChatModelMap[getValues('chat.chatModel')]?.price, 1000)}
+                  元/1K tokens(包括上下文和回答)
+                </Box>
+              </Flex>
+              <Flex alignItems={'center'} mt={5}>
+                <Box flex={'0 0 80px'} w={0}>
+                  收藏人数:
+                </Box>
+                <Box>{getValues('share.collection')}人</Box>
+              </Flex>
+              {/* {isOwner && (
           <Flex mt={5} alignItems={'center'}>
             <Box flex={'0 0 100px'}>删除应用</Box>
             <Button
@@ -301,90 +300,104 @@ ${e.password ? `密码为: ${e.password}` : ''}`;
             </Button>
           </Flex>
         )} */}
+            </Card>
+
+            {/* model effect */}
+            {canRead && (
+              <Card p={4} flex={1} mt={isPc ? '0' : '10px'} ml={isPc ? '10px' : '0'}>
+                <Box fontWeight={'bold'}>模型效果</Box>
+                <FormControl mt={4}>
+                  <Flex alignItems={'center'}>
+                    <Box flex={'0 0 80px'} w={0}>
+                      <Box as={'span'} mr={2}>
+                        温度
+                      </Box>
+                      <Tooltip label={'温度越高，模型的发散能力越强；温度越低，内容越严谨。'}>
+                        <QuestionOutlineIcon />
+                      </Tooltip>
+                    </Box>
+
+                    <Slider
+                      aria-label="slider-ex-1"
+                      min={0}
+                      max={10}
+                      step={1}
+                      value={getValues('chat.temperature')}
+                      isDisabled={!isOwner}
+                      onChange={(e) => {
+                        setValue('chat.temperature', e);
+                        setRefresh(!refresh);
+                      }}
+                    >
+                      <SliderMark
+                        value={getValues('chat.temperature')}
+                        textAlign="center"
+                        bg="myBlue.600"
+                        color="white"
+                        w={'18px'}
+                        h={'18px'}
+                        borderRadius={'100px'}
+                        fontSize={'xs'}
+                        transform={'translate(-50%, -200%)'}
+                      >
+                        {getValues('chat.temperature')}
+                      </SliderMark>
+                      <SliderTrack>
+                        <SliderFilledTrack bg={'myBlue.700'} />
+                      </SliderTrack>
+                      <SliderThumb />
+                    </Slider>
+                  </Flex>
+                </FormControl>
+                {getValues('chat.relatedKbs').length > 0 && (
+                  <Flex mt={4} alignItems={'center'}>
+                    <Box mr={4} whiteSpace={'nowrap'}>
+                      搜索模式&emsp;
+                    </Box>
+                    <Select
+                      isDisabled={!isOwner}
+                      {...register('chat.searchMode', { required: '搜索模式不能为空' })}
+                    >
+                      {Object.entries(ModelVectorSearchModeMap).map(([key, { text }]) => (
+                        <option key={key} value={key}>
+                          {text}
+                        </option>
+                      ))}
+                    </Select>
+                  </Flex>
+                )}
+
+                <Box mt={4}>
+                  <Box mb={1}>系统提示词</Box>
+                  <Textarea
+                    rows={8}
+                    maxLength={-1}
+                    isDisabled={!isOwner}
+                    placeholder={
+                      '模型默认的 prompt 词，通过调整该内容，可以引导模型聊天方向。\n\n如果使用了知识库搜索，没有填写该内容时，系统会自动补充提示词；如果填写了内容，则以填写的内容为准。'
+                    }
+                    {...register('chat.systemPrompt')}
+                  />
+                </Box>
+              </Card>
+            )}
+          </Flex>
+
+          <Card p={4} mt={'10px'}>
+            <Flex justifyContent={'space-between'}>
+              <Box fontWeight={'bold'}>关联的知识库</Box>
+              <Button
+                size={'sm'}
+                variant={'outline'}
+                colorScheme={'myBlue'}
+                onClick={onOpenKbSelect}
+              >
+                选择
+              </Button>
+            </Flex>
+            <RenderSelectedKbList />
           </Card>
         </TabPanel>
-
-        {/* model effect */}
-        {canRead && (
-          <TabPanel px={0}>
-            <Card p={4}>
-              <Box fontWeight={'bold'}>模型效果</Box>
-              <FormControl mt={4}>
-                <Flex alignItems={'center'}>
-                  <Box flex={'0 0 80px'} w={0}>
-                    <Box as={'span'} mr={2}>
-                      温度
-                    </Box>
-                    <Tooltip label={'温度越高，模型的发散能力越强；温度越低，内容越严谨。'}>
-                      <QuestionOutlineIcon />
-                    </Tooltip>
-                  </Box>
-
-                  <Slider
-                    aria-label="slider-ex-1"
-                    min={0}
-                    max={10}
-                    step={1}
-                    value={getValues('chat.temperature')}
-                    isDisabled={!isOwner}
-                    onChange={(e) => {
-                      setValue('chat.temperature', e);
-                      setRefresh(!refresh);
-                    }}
-                  >
-                    <SliderMark
-                      value={getValues('chat.temperature')}
-                      textAlign="center"
-                      bg="myBlue.600"
-                      color="white"
-                      w={'18px'}
-                      h={'18px'}
-                      borderRadius={'100px'}
-                      fontSize={'xs'}
-                      transform={'translate(-50%, -200%)'}
-                    >
-                      {getValues('chat.temperature')}
-                    </SliderMark>
-                    <SliderTrack>
-                      <SliderFilledTrack bg={'myBlue.700'} />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </Flex>
-              </FormControl>
-              {getValues('chat.relatedKbs').length > 0 && (
-                <Flex mt={4} alignItems={'center'}>
-                  <Box mr={4} whiteSpace={'nowrap'}>
-                    搜索模式&emsp;
-                  </Box>
-                  <Select
-                    isDisabled={!isOwner}
-                    {...register('chat.searchMode', { required: '搜索模式不能为空' })}
-                  >
-                    {Object.entries(ModelVectorSearchModeMap).map(([key, { text }]) => (
-                      <option key={key} value={key}>
-                        {text}
-                      </option>
-                    ))}
-                  </Select>
-                </Flex>
-              )}
-
-              <Box mt={4}>
-                <Box mb={1}>系统提示词</Box>
-                <Textarea
-                  rows={8}
-                  maxLength={-1}
-                  isDisabled={!isOwner}
-                  placeholder={
-                    '模型默认的 prompt 词，通过调整该内容，可以引导模型聊天方向。\n\n如果使用了知识库搜索，没有填写该内容时，系统会自动补充提示词；如果填写了内容，则以填写的内容为准。'
-                  }
-                  {...register('chat.systemPrompt')}
-                />
-              </Box>
-            </Card>
-          </TabPanel>
-        )}
 
         {isOwner && (
           <TabPanel px={0}>
@@ -435,22 +448,6 @@ ${e.password ? `密码为: ${e.password}` : ''}`;
             </Card>
           </TabPanel>
         )}
-        <TabPanel px={0}>
-          <Card p={4}>
-            <Flex justifyContent={'space-between'}>
-              <Box fontWeight={'bold'}>关联的知识库</Box>
-              <Button
-                size={'sm'}
-                variant={'outline'}
-                colorScheme={'myBlue'}
-                onClick={onOpenKbSelect}
-              >
-                选择
-              </Button>
-            </Flex>
-            <RenderSelectedKbList />
-          </Card>
-        </TabPanel>
         {/* shareChat */}
         <TabPanel px={0}>
           <Card p={4} gridColumnStart={1} gridColumnEnd={[2, 3]}>
@@ -477,8 +474,8 @@ ${e.password ? `密码为: ${e.password}` : ''}`;
                 创建分享窗口
               </Button>
             </Flex>
-            <TableContainer mt={1} minH={'100px'}>
-              <Table variant={'simple'} w={'100%'}>
+            <TableContainer position={'relative'} mt={1} minH={'100px'}>
+              <Table variant={'simple'}>
                 <Thead>
                   <Tr>
                     <Th>名称</Th>

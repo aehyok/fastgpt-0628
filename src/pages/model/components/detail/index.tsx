@@ -192,7 +192,7 @@ const ModelDetail = ({ modelId, isPc }: { modelId: string; isPc: boolean }) => {
                   删除
                 </Button>
               )}
-              <Button variant={'outline'} size={'sm'} onClick={handlePreviewChat}>
+              <Button variant={'outline'} size={'sm'} ml={4} onClick={handlePreviewChat}>
                 开始对话
               </Button>
               {isOwner && (
