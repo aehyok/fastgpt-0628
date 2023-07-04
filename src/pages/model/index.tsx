@@ -39,7 +39,7 @@ const Model = ({ modelId }: { modelId: string }) => {
             <ModelList modelId={modelId} />
           </SideBar>
         )}
-        <Box flex={1} h={'95%'} position={'relative'}>
+        <Box flex={1} h={'95%'} position={'relative'} maxW={'100%'}>
           {modelId && <ModelDetail modelId={modelId} isPc={isPc} />}
         </Box>
       </Flex>
